@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Speech-to-Text</title>
+  <style>
+    .highlight {
+      background-color: green;
+      color: white;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="form-floating">
+    <form>
+      <input type="text" id="titleInput" placeholder="Title"><br>
+      <textarea class="form-control" id="commentTextarea" placeholder="Leave a comment here" style="height: 200px; width: 400px;"></textarea>
+      <label for="commentTextarea">Your Note</label>
+      <br>
+      <button type="button" id="speechButton">Speech-to-Text</button>
+      <button type="button" id="save">Save</button>
+    </form>
+  </div>
+
+  <script>
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.continuous = true; // Enable continuous speech recognition
+      recognition.interimResults = true; // Enable capturing interim results
+
+      const titleInput = document.getElementById('titleInput');
+      const commentTextarea = document.getElementById('commentTextarea');
+      const speechButton = document.getElementById('speechButton');
+      let isListening = false; // Flag to track if speech recognition is active
+      let recognizedText = ''; // Variable to store recognized text
+
+      titleInput.addEventListener('focus', () => {
+        stopListening();
+      });
+
+      commentTextarea.addEventListener('focus', () => {
+        stopListening();
+      });
+
+      speechButton.addEventListener('click', () => {
+        if (!isListening) {
+          startListening();
+        } else {
+          stopListening();
+        }
+      });
+
+      function startListening() {
+        recognizedText = commentTextarea.value; // Preserve the existing text
+        recognition.start();
+        speechButton.classList.add('highlight');
+        isListening = true;
+      }
+
+      function stopListening() {
+        recognition.stop();
+        speechButton.classList.remove('highlight');
+        isListening = false;
+      }
+
+      recognition.onresult = (event) => {
+        let interimTranscript = ''; // Variable to store interim recognized text
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            recognizedText += transcript + ' '; // Append the recognized text
+          } else {
+            interimTranscript += transcript + ' ';
+          }
+        }
+
+        commentTextarea.value = recognizedText + interimTranscript;
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error occurred: ', event.error);
+        stopListening();
+      };
+    } else {
+      console.log('Speech recognition not supported in this browser.');
+    }
+  </script>
+</body>
+</html>

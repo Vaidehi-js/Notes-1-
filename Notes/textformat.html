@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="effects.js"></script>
+    <div class="form-floating">
+  <form>
+    <input type="text" placeholder="Title"><br>
+  <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 200px;width:400px">
+    
+  </textarea>
+  <label for="floatingTextarea2">Comments</label>
+  <br>
+  <button type="button" style="background-color: orange; color: white;">Save</button>
+  </form>
+</div>
+</body>
+</html>
+
+
+
+
+var deleteButton = document.createElement('span');
+deleteButton.className = 'delete-button';
+deleteButton.innerText = 'DELETE';
+deleteButton.onclick = function () {
+  noteElement.remove();
+};
+
+noteElement.appendChild(deleteButton);
